@@ -2,6 +2,7 @@
 #include <functional>
 #include <member_thunk/member_thunk.hpp>
 #include <tlhelp32.h>
+#include <dbt.h>
 
 #include "constants.hpp"
 #include "../localization.hpp"
@@ -334,6 +335,15 @@ LRESULT TaskbarAttributeWorker::MessageHandler(UINT uMsg, WPARAM wParam, LPARAM 
 		MessagePrint(spdlog::level::debug, L"Monitor configuration change detected, refreshing...");
 		ResetState();
 		return 0;
+	}
+	else if (uMsg == WM_DEVICECHANGE)
+	{
+		if (wParam == DBT_DEVNODES_CHANGED)
+		{
+			MessagePrint(spdlog::level::debug, L"Device configuration change detected, refreshing...");
+			ResetState();
+			return TRUE;
+		}
 	}
 	else if (uMsg == WM_POWERBROADCAST && wParam == PBT_POWERSETTINGCHANGE)
 	{
